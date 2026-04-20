@@ -1,17 +1,14 @@
-# 1. 古いファイルがあれば削除
+# 1. 壊れたファイルを削除
 rm -f MuskArch_Complete_Installer.sh
 
-# 2. スクリプトを新規作成
-cat > MuskArch_Complete_Installer.sh << 'ENDSCRIPT'
+# 2. よりシンプルなバージョンのスクリプトを作成
+cat > MuskArch_Complete_Installer.sh << 'EOF'
 #!/bin/bash
 set -e
 echo "🚀 MuskArch v2.0 インストール開始..."
 
 if ! mountpoint -q /mnt; then
-    echo "❌ エラー: /mnt がマウントされていません"
-    echo "以下のコマンドを実行してください:"
-    echo "mount /dev/nvme0n1p2 /mnt"
-    echo "mkdir -p /mnt/boot && mount /dev/nvme0n1p1 /mnt/boot"
+    echo "❌ /mnt がマウントされていません"
     exit 1
 fi
 
@@ -21,7 +18,7 @@ pacstrap /mnt base linux linux-firmware base-devel git vim neovim zsh networkman
 
 genfstab -U /mnt >> /mnt/etc/fstab
 
-arch-chroot /mnt /bin/bash << 'CHROOTEOF'
+arch-chroot /mnt /bin/bash << 'CHROOT'
 ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
 hwclock --systohc
 echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
@@ -64,15 +61,13 @@ workspace = 4, name:SpaceX
 workspace = 5, name:Memes
 HYPR
 chown -R elon:elon /home/elon
-CHROOTEOF
+CHROOT
 
-echo "🎉 インストール完了！"
-echo "次のコマンドを実行: umount -R /mnt && reboot"
-ENDSCRIPT
+echo "🎉 インストール完了！ umount -R /mnt && reboot"
+EOF
 
 # 3. 実行権限を付ける
 chmod +x MuskArch_Complete_Installer.sh
 
 echo "✅ スクリプト作成完了！"
-echo "今すぐ実行するには以下を入力:"
-echo "./MuskArch_Complete_Installer.sh"
+echo "今すぐ実行: ./MuskArch_Complete_Installer.sh"
