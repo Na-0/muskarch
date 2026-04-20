@@ -1,11 +1,17 @@
+# 1. 古いファイルがあれば削除
+rm -f MuskArch_Complete_Installer.sh
+
+# 2. スクリプトを新規作成
 cat > MuskArch_Complete_Installer.sh << 'ENDSCRIPT'
 #!/bin/bash
-# MuskArch v2.0 Complete Installer
 set -e
 echo "🚀 MuskArch v2.0 インストール開始..."
 
 if ! mountpoint -q /mnt; then
-    echo "❌ /mnt がマウントされていません"
+    echo "❌ エラー: /mnt がマウントされていません"
+    echo "以下のコマンドを実行してください:"
+    echo "mount /dev/nvme0n1p2 /mnt"
+    echo "mkdir -p /mnt/boot && mount /dev/nvme0n1p1 /mnt/boot"
     exit 1
 fi
 
@@ -27,22 +33,22 @@ echo "elon:tesla123" | chpasswd
 echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers
 systemctl enable NetworkManager docker
 bootctl install
-cat > /boot/loader/entries/muskarch.conf << 'BOOTEOF'
+cat > /boot/loader/entries/muskarch.conf << 'BOOT'
 title   MuskArch v2.0
 linux   /vmlinuz-linux
 initrd  /initramfs-linux.img
 options root=UUID=$(blkid -s UUID -o value /dev/nvme0n1p2) rw
-BOOTEOF
+BOOT
 mkdir -p /home/elon/.config
-cat > /home/elon/.config/starship.toml << 'STAREOF'
+cat > /home/elon/.config/starship.toml << 'STAR'
 format = "[username][ directory][git_branch][character]"
 [username] style_user = "bold cyan" show_always = true
 [directory] style = "bold blue"
 [git_branch] symbol = "🚀 " style = "bold purple"
 [character] success_symbol = "[➜](bold green)" error_symbol = "[✗](bold red)"
-STAREOF
+STAR
 mkdir -p /home/elon/.config/hypr
-cat > /home/elon/.config/hypr/hyprland.conf << 'HYPREOF'
+cat > /home/elon/.config/hypr/hyprland.conf << 'HYPR'
 monitor=,preferred,auto,1
 input { kb_layout = us follow_mouse = 1 }
 general { gaps_in = 5 gaps_out = 10 border_size = 2 col.active_border = rgba(00f5ffaa) }
@@ -56,9 +62,17 @@ workspace = 2, name:Code
 workspace = 3, name:xAI
 workspace = 4, name:SpaceX
 workspace = 5, name:Memes
-HYPREOF
+HYPR
 chown -R elon:elon /home/elon
 CHROOTEOF
 
-echo "🎉 インストール完了！ umount -R /mnt && reboot"
+echo "🎉 インストール完了！"
+echo "次のコマンドを実行: umount -R /mnt && reboot"
 ENDSCRIPT
+
+# 3. 実行権限を付ける
+chmod +x MuskArch_Complete_Installer.sh
+
+echo "✅ スクリプト作成完了！"
+echo "今すぐ実行するには以下を入力:"
+echo "./MuskArch_Complete_Installer.sh"
