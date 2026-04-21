@@ -1,4 +1,3 @@
-cat > MuskArch_Complete_Installer.sh << 'ENDOFSCRIPT'
 #!/bin/bash
 # ============================================================
 # MuskArch v2.0 - Complete Automated Installer
@@ -103,4 +102,3 @@ echo "3. Login as 'elon' (password: tesla123)"
 echo ""
 echo "Welcome to the future. Now go build something that matters."
 echo " - Elon Musk (and your new OS)"
-ENDOFSCRIPT
